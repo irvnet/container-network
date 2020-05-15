@@ -1,0 +1,217 @@
+
+
+# to unwind a deployment with its reource files from helm
+- create a vagrant machine & clone https://github.com/corda/corda-kubernetes-internal 
+- deploy using the script
+- extract the yaml files from kubectl
+
+
+# might be easier to learn helm first interestingly... 
+
+
+# Understanding Helm
+https://helm.sh/
+https://docs.bitnami.com/tutorials/create-your-first-helm-chart/
+https://github.com/helm/helm
+
+
+# render templates locally
+https://stackoverflow.com/questions/50584091/helm-export-yaml-files-locally-just-use-templating-engine-do-not-send-to-kuber
+
+
+# decompose the helm command in examples/corda-node.sh
+
+HELM_COMMAND="helm install"\
+" helm/charts/corda-node"\
+" --set myLegalNamePrefix=${PREFIX}"\
+" --namespace=${NAMESPACE}"\
+" --set cordaJarRemoteUrlPassword='ereader22'"\
+" --name=${PREFIX}-${i}-${PLATFORM}-${DATABASE}-${VERSION}-${ENV}"\
+" -f ${VALUES_FOLDER}/${PLATFORM}/${DATABASE}/${VERSION}.yaml"\
+" -f ${VALUES_FOLDER}/environments/env.${ENV}"
+
+
+  ./examples/corda-node.sh   pb         1   ent  mssql    40ga    daywatch
+  ./examples/corda-node.sh   myprefix1  2   os   h2       41ga    devnet
+  ./examples/corda-node.sh   myprefix2  9   ent  ora12aws 40rc06  daywatch
+
+
+
+
+# prefix:  must be generating the legal name somewhere in the chart
+
+--------------------------
+https://github.com/helm/helm
+https://stackoverflow.com/questions/50584091/helm-export-yaml-files-locally-just-use-templating-engine-do-not-send-to-kuber
+https://helm.readthedocs.io/en/latest/authoring_charts/
+https://github.com/helm/charts
+https://helm.readthedocs.io/en/latest/
+
+
+
+
+--------------------------
+
+hey! - hope all's well... I was trying to understand better how the helm chart works. I noticed there were updates so I did a pull and got the latest. Then i tried to deploy like this: 
+
+
+helm install                                 \
+helm/charts/corda-node                       \
+ --set myLegalNamePrefix=irv                 \
+ --namespace="corda-nodes"                   \
+ --set cordaJarRemoteUrlPassword='ereader22' \
+ --name=irv-deploy                           \
+ -f examples/values/ent/h2/44ga.yaml         \
+ -f examples/values/environments/env.daywatch
+
+
+And i got this error - "Error: unknown flag: --name"
+
+
+So I tried to follow the instructions and tried this:
+./examples/corda-node.sh   irv  2   ent  h2 44ga  daywatch
+
+and got the same error.
+Error: unknown flag: --name
+
+Any suggestions?
+
+
+
+
+moved the helm3 binary to donwlods directory.. instlled helm 2 via brew
+
+
+Yup... i pulled helm 3 from my classpath(used it to deploy CENM) and installed helm 2 w/ brew... now this works... - Thanks!!
+
+helm install                                 \
+helm/charts/corda-node                       \
+ --set myLegalNamePrefix=irv                 \
+ --namespace="corda-nodes"                   \
+ --set cordaJarRemoteUrlPassword='ereader22' \
+ --name=irv-deploy                           \
+ -f examples/values/ent/h2/44ga.yaml         \
+ -f examples/values/environments/env.daywatch
+
+Looking thru the helm docs now...anything else on helm you'd suggest I read to understand helm charts better?
+
+
+
+helm template                                 \
+helm/charts/corda-node                       \
+ --set myLegalNamePrefix=irv                 \
+ --namespace="corda-nodes"                   \
+ --set cordaJarRemoteUrlPassword='ereader22' \
+ --name=irv-deploy                           \
+ -f examples/values/ent/h2/44ga.yaml         \
+ -f examples/values/environments/env.daywatch > ~/Desktop/chart.txt
+
+
+
+-----------------------
+build a vagrant machine with these clients for portal admin tool and education
+
+
+# az - The CLI tool used to manage Azure resources
+- https://docs.microsoft.com/en-us/cli/azure/install-azure-cli-apt?view=azure-cli-latest
+
+
+# kubectl - the Kubernetes tool used to manage objects
+https://kubernetes.io/docs/tasks/tools/install-kubectl/#install-kubectl-on-linux
+
+
+# helm install
+https://github.com/helm/helm/releases/tag/v2.16.6
+https://get.helm.sh/helm-v2.16.6-linux-amd64.tar.gz
+
+
+stern - Tail multiple pods/containers logs from Kubernetes
+https://github.com/wercker/stern
+https://github.com/wercker/stern/releases
+https://kubernetes.io/blog/2016/10/tail-kubernetes-with-stern/
+https://github.com/wercker/stern
+
+
+https://github.com/wercker/stern/releases/download/1.11.0/stern_linux_amd64
+
+
+NEXT
+- got a vagrantfile ~/projects/corda-kubernetes-vagrant
+- need a provisioning script to install all the clients
+- do a shell script and an ansible script
+- look at ./ansible-r3-roles/jdk-zulu-enterprise/Vagrantfile for ansible provisioner example
+- also need 3 other vagrant machines for kubeadm installs... combined its separate client & cluster for training
+
+# why won't stern run on linux/vagrant???
+
+
+-----------------------
+
+# log tailoing
+wasn't able to get stern to work on linux
+
+-----------------------
+
+
+#k8s client tools
+https://www.freecodecamp.org/news/how-to-set-up-a-serious-kubernetes-terminal-dd07cab51cd4/
+
+# ssh config
+https://vinaysit.com/2019/06/11/vagrant-ssh-inter-connectivity-of-multi-virtual-machines/
+
+# don't check fingerprints
+https://askubuntu.com/questions/87449/how-to-disable-strict-host-key-checking-in-ssh
+Host *
+    StrictHostKeyChecking no
+
+
+
+
+kubeadm join 10.0.2.15:6443 --token b5cikk.kzmw9i2bjun06fom \
+    --discovery-token-ca-cert-hash sha256:4c64424b3e177ed14f22f49f12a8c3ef3c0e4058a128a23ff57cf1b6c0606cce
+
+
+
+kubectl apply -f "https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')"
+
+
+# check these to help fix cluster join issue
+https://www.mirantis.com/blog/how-install-kubernetes-kubeadm/
+https://www.digitalocean.com/community/tutorials/how-to-create-a-kubernetes-cluster-using-kubeadm-on-ubuntu-16-04
+https://vitux.com/install-and-deploy-kubernetes-on-ubuntu/
+
+
+
+---------------
+- us bancorp
+
+# monitoring
+clarifying metrics
+   - review SRE principals, identify required corda metrics
+   - socialize required metrics with adam houston and valerio
+
+pm sync
+   - check on roadmap status
+   - review game plan
+
+update github repo
+   - draft of vagrant machine for kubernetes
+   - container setup (add jolokia)
+   - push game-plan deck
+   - schedule a review with guy (mid week)
+
+
+
+Phase 1: Initial value for readers 
+- understand what metrics are
+- install a node on vm with jolokia/hawtio and see metrics
+- install node in containers w/ jolokia/hawtio and see metrics
+- Install and configure prometheus for monitoring nodes on vms
+
+
+Phase 2: 
+- learn to align SRE principals to Corda Monitoring
+- introduce logging concepts and usage
+
+
+---------------

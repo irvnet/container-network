@@ -1,0 +1,706 @@
+---
+# Source: corda-node/templates/configmap.yaml
+
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: corda-node-2020-05-02-20-59-46
+  annotations:
+    "helm.sh/created": "2020-05-02-20-59-46"
+  namespace: corda-nodes
+data:
+  temp: |+
+    truststores/network-root-truststore-daywatch.jks
+    truststores/network-root-truststore-daywatch.jks
+
+  node.conf: |+
+    networkServices {
+        doormanURL="http://day3-doorman.cordaconnect.io:10001"
+        networkMapURL="http://day3-netmap.cordaconnect.io:10001"
+    }
+    
+    
+    dataSourceProperties {
+        dataSource {
+            password=ziAscD0MJnj4n4xkFWY6XuMBuw9bvYC7
+            url="jdbc:h2:file:/opt/corda/persistence/persistence;DB_CLOSE_ON_EXIT=FALSE;WRITE_DELAY=0;LOCK_TIMEOUT=10000"
+            user=sa
+        }
+        dataSourceClassName="org.h2.jdbcx.JdbcDataSource"
+    }
+    
+    
+    devMode = false
+    emailAddress : "devops@r3.com"
+    h2port = 11229
+    keyStorePassword : cordacadevpass1
+    myLegalName : "O=IRV-2020-05-02-20-59-46 R3 HOLDCO LLC, OU=CORDA TESTS, L=NEW YORK, C=US"
+    p2pAddress : "irv-deploy.tests.corda.r3cev.com:10002"
+    rpcSettings {
+        address="0.0.0.0:10003"
+        adminAddress="localhost:10770"
+        standAloneBroker="false"
+        useSsl="false"
+    }
+    rpcUsers=[
+        {
+            password="WelcomeToCorda"
+            permissions=[
+                ALL
+            ]
+            username="corda"
+        }
+    ]
+    sshd {
+        port=2010
+    }
+    trustStorePassword=trustpass
+    cordappSignerKeyFingerprintBlacklist = []
+
+  corda-node-run.sh: |+
+    #!/bin/sh
+    
+    set -x
+    
+    
+    #
+    # If you requested to give it some time (i.e.: to give DNS some time to propagate FQDN or debug scripts ...)
+    #
+    if [ "0" -gt "0" ]
+    then
+        echo
+        echo "Corda: sleeping 0 as requested"
+        echo
+        sleep 0
+    fi
+    
+    bash /opt/corda/bin/corda-download-from-url.sh
+    
+    #
+    # main run
+    #
+    if [ -f certificates/nodekeystore.jks ] && [ -f certificates/sslkeystore.jks ] && [ -f certificates/truststore.jks ]
+    then
+        echo
+        echo "Corda: kicking off node ..."
+        echo
+        java -Dcapsule.jvm.args='-Xmx2G' -jar /opt/corda/bin/corda.jar \
+        --config-file=etc/node.conf \
+        --log-to-console \
+        --network-root-truststore certificates/network-root-truststore.jks \
+        --network-root-truststore-password password
+        EXIT_CODE=${?}
+    else
+        echo "Missing jks files in certificates/ folder:"
+        ls -al certificates/
+        EXIT_CODE=100
+    fi
+    
+    if [ "${EXIT_CODE}" -ne "0" ]
+    then
+        HOW_LONG=120
+        echo
+        echo "Corda exit code: ${EXIT_CODE} (error)"
+        echo "MD5/SHA256(certificates/network-root-truststore.jks): "
+        md5sum certificates/network-root-truststore.jks    | awk '{print $1}' | xargs printf "   md5sum: %65s\n"
+        sha256sum certificates/network-root-truststore.jks | awk '{print $1}' | xargs printf "sha256sum: %65s\n"
+        echo
+        echo
+        echo "Corda: going to sleep for requested ${HOW_LONG} seconds to let you login and investigate."
+        echo
+    else
+        HOW_LONG=0
+        echo
+        echo "Corda: no errors - sleeping for requested ${HOW_LONG} seconds before disappearing."
+        echo
+    fi
+    
+    sleep ${HOW_LONG}
+
+  corda-initial-registration.sh: |+
+    #!/bin/sh
+    
+    set -x
+    
+    
+    #
+    # If you requested to give it some time (i.e.: to give DNS some time to propagate FQDN or debug scripts ...)
+    #
+    if [ "0" -gt "0" ]
+    then
+        echo
+        echo "Corda: sleeping 0 as requested"
+        echo
+        sleep 0
+    fi
+    
+    bash /opt/corda/bin/corda-download-from-url.sh
+    
+    #
+    # Store my own FQDN in a file - will need that later to check if FQDN has been fully propagated
+    #
+    test -f /opt/corda/private-data/CORDA.FQDN.NAME || echo irv-deploy.tests.corda.r3cev.com > /opt/corda/private-data/CORDA.FQDN.NAME
+    
+    #
+    # save version just for future reference
+    #
+    
+    ls -al
+    ls -al bin/
+    
+    test -f /opt/corda/private-data/CORDA.VERSION.FULL || java -jar /opt/corda/bin/corda.jar --version > /opt/corda/private-data/CORDA.VERSION.FULL
+    # CORDA_VERSION_MAJOR_NUMBER=$(grep "^Version:" /opt/corda/private-data/CORDA.VERSION.FULL | awk -F' ' '{print $2}')
+    CORDA_VERSION_MAJOR_NUMBER=$(grep "^Version:" /opt/corda/private-data/CORDA.VERSION.FULL | awk -F' ' '{print $2}' | awk -F. '{print $1}')
+    echo
+    echo "Corda version major number: ${CORDA_VERSION_MAJOR_NUMBER}"
+    echo
+    cat /opt/corda/private-data/CORDA.VERSION.FULL
+    
+    #
+    # format of initial registration depends on Corda version: it differs between v3 and v4
+    #
+    if [ "${CORDA_VERSION_MAJOR_NUMBER}" -eq "3" ]
+    then
+        INITIAL_REGISTRATION="--initial-registration"
+    elif [ "${CORDA_VERSION_MAJOR_NUMBER}" -ge "4" ]
+    then
+        INITIAL_REGISTRATION="initial-registration"
+    else
+        echo
+        echo "Corda: unsupported version: >${CORDA_VERSION_MAJOR_NUMBER}<"
+        echo
+        sleep 120
+        exit 1
+    fi
+    
+    
+    pwd
+    cat -n etc/node.conf
+    
+    
+    #
+    # test if this is first, initial run (initial registration) - otherwise skip this step
+    #
+    NETWORK_ROOT_TRUSTSTORE=certificates/network-root-truststore.jks
+    
+    
+    echo
+    echo "md5/sha256 of certificates/network-root-truststore.jks: "
+    md5sum certificates/network-root-truststore.jks    | awk '{print $1}' | xargs printf "   md5sum: %65s\n"
+    sha256sum certificates/network-root-truststore.jks | awk '{print $1}' | xargs printf "sha256sum: %65s\n"
+    echo
+    echo
+    
+    # two main reason for endless loop:
+    #   - repeat in case IdMan is temporarily not available (real life experience ...)
+    #   - kubernetes monitoring: pod stucks in initContainer which is easy to monitor
+    while true
+    do
+    
+        # Test network accessibility for debugging purposes and we don't have ping/nc/telnet available ...)
+        timeout 5 bash -c 'cat < /dev/null > /dev/tcp/www.google.com/80';                       echo $?
+        timeout 5 bash -c 'cat < /dev/null > /dev/tcp/bbc.co.uk/80';                            echo $?
+        timeout 5 bash -c 'cat < /dev/null > /dev/tcp/youtube.com/80';                          echo $?
+        timeout 5 bash -c 'cat < /dev/null > /dev/tcp/amazon.com/80';                           echo $?
+        timeout 5 bash -c 'cat < /dev/null > /dev/tcp/day3-doorman.cordaconnect.io/10001';      echo $?
+        timeout 5 bash -c 'cat < /dev/null > /dev/tcp/day3-doorman.cordaconnect.io/80';         echo $?
+        timeout 5 bash -c 'cat < /dev/null > /dev/tcp/day3-doorman.cordaconnect.io/443';        echo $?
+        timeout 5 bash -c 'cat < /dev/null > /dev/tcp/devnet-doorman.cordaconnect.io/10001';    echo $?
+    
+        if [ ! -f certificates/nodekeystore.jks ] || [ ! -f certificates/sslkeystore.jks ] || [ ! -f certificates/truststore.jks ]
+        then
+            echo
+            echo "Corda: running initial registration ..."
+            echo
+            # INIT_REG=${INITIAL_REGISTRATION}
+            # INIT_REG_MESSAGE="Corda: running initial registration ..."
+            java -Dcapsule.jvm.args='-Xmx2G' -jar /opt/corda/bin/corda.jar \
+            ${INITIAL_REGISTRATION} \
+            --config-file=etc/node.conf \
+            --log-to-console \
+            --network-root-truststore ${NETWORK_ROOT_TRUSTSTORE}  \
+            --network-root-truststore-password password
+            # --logging-level=DEBUG
+            EXIT_CODE=${?}
+        else
+            echo
+            echo "Corda: already registered to doorman - skipping initial registration"
+            echo
+            EXIT_CODE="0"
+            break
+        fi
+    done
+    
+    if [ "${EXIT_CODE}" -ne "0" ]
+    then
+        HOW_LONG=120
+        echo
+        echo "Corda initial registration exit code: ${EXIT_CODE} (error)"
+        echo
+        echo "Corda initial registration: going to sleep for requested ${HOW_LONG} seconds to let you login and investigate."
+        echo
+    else
+        HOW_LONG=0
+        echo
+        echo "Corda initial registration: no errors - sleeping for requested ${HOW_LONG} seconds before disappearing."
+        echo
+    fi
+    
+    sleep ${HOW_LONG}
+
+  corda-download-from-url.sh: |+
+    #!/bin/sh
+    
+    
+    set -x
+    
+    
+    
+    # do nothing ...
+    
+    
+    
+    ls -al drivers/
+    ls -al cordapps/
+    
+    
+    cd cordapps/
+    curl -k -u enterprise-reader:ereader22 -O https://ci-artifactory.corda.r3cev.com/artifactory/r3-corda-releases/com/r3/corda/corda-finance-workflows/4.0/corda-finance-workflows-4.0.jar
+    curl -k -u enterprise-reader:ereader22 -O https://ci-artifactory.corda.r3cev.com/artifactory/corda-releases/net/corda/corda-finance-contracts/4.0/corda-finance-contracts-4.0.jar
+    mkdir config
+    cd config
+    
+    CFG_FILE=$(basename ../corda-finance-workflows* .jar)
+    echo "CFG_FILE: ${CFG_FILE}"
+    cat <<EOF > ${CFG_FILE}.conf
+    {
+        "issuableCurrencies" : [
+            "USD",
+            "GBP"
+        ]
+    }
+    EOF
+    ls -al
+    ls -al ..
+    cd ../..
+    
+    
+    
+    ls -al bin/
+    
+    if [ ! -f private-data/corda.jar ]
+    then
+        curl -k \
+            -u enterprise-reader:ereader22 \
+            -o bin/corda.jar \
+            https://ci-artifactory.corda.r3cev.com/artifactory/r3-corda-releases/com/r3/corda/corda/4.4/corda-4.4.jar
+    fi
+    # cp private-data/corda.jar bin/corda.jar
+    
+    
+    ls -al bin/
+    
+    
+    
+
+  corda-wait-for-fqdn.sh: |+
+    #!/bin/sh
+    
+    echo
+    echo "Corda: you have asked not to wait for FQDN to be propagated so I don't wait for it."
+    echo
+    exit 0
+    
+
+  db.py: |+
+
+
+binaryData:
+  network-root-truststore.jks: |-
+    /u3+7QAAAAIAAAACAAAAAgALY29yZGFyb290Y2EAAAFqDMEEUgAFWC41MDkAAAIBMIIB/TCCAaSgAwIBAgIIPEX7OXc/MeAwCgYIKoZIzj0EAwIwYzELMAkGA1UEBhMCVVMxETAPBgNVBAcTCE5ldyBZb3JrMRYwFAYDVQQKEw1SMyBIb2xkQ28gTExDMQ4wDAYDVQQLEwVDb3JkYTEZMBcGA1UEAxMQRGF5V2F0Y2ggVjMgcm9vdDAeFw0xOTA0MTEwMDAwMDBaFw0zNjA3MTAwMDAwMDBaMGMxCzAJBgNVBAYTAlVTMREwDwYDVQQHEwhOZXcgWW9yazEWMBQGA1UEChMNUjMgSG9sZENvIExMQzEOMAwGA1UECxMFQ29yZGExGTAXBgNVBAMTEERheVdhdGNoIFYzIHJvb3QwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAATttWUJbCexJSidUlW6QAsa+N57enODIpqJvwZLzkRwrPWYnky08I5nGdWCfNP64T5wKhdrp+J+n8vvHsACbkb/o0IwQDAdBgNVHQ4EFgQUk5cthscq+iwzxmuD1ajriKsGoUUwDwYDVR0TAQH/BAUwAwEB/zAOBgNVHQ8BAf8EBAMCAYYwCgYIKoZIzj0EAwIDRwAwRAIgVOtcHxx/3ceOWjG65fDHJplIB+lA2QUm1J4MYhERw6cCIBbu4Ynyvj9wLvKkrIE+Wt4Cbn+kCJgGjUAdRPMnlNORAAAAAgADdGxzAAABagzBcLAABVguNTA5AAACQTCCAj0wggHioAMCAQICCB2p6I0v6NqnMAoGCCqGSM49BAMCMGIxCzAJBgNVBAYTAlVTMREwDwYDVQQHEwhOZXcgWW9yazEWMBQGA1UEChMNUjMgSG9sZENvIExMQzEOMAwGA1UECxMFQ29yZGExGDAWBgNVBAMTD0RheVdhdGNoIFYzIHRsczAeFw0xOTA0MTEwMDAwMDBaFw0zNjA3MTAwMDAwMDBaMGIxCzAJBgNVBAYTAlVTMREwDwYDVQQHEwhOZXcgWW9yazEWMBQGA1UEChMNUjMgSG9sZENvIExMQzEOMAwGA1UECxMFQ29yZGExGDAWBgNVBAMTD0RheVdhdGNoIFYzIHRsczBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABO4XccwxA7LVq7X0fXlcM3aVm34hh3nVESdinBT1BXWJFifg+c3VjTyNSIlUAlaLZ1P+MrKiJlGUDryx2VaVaxqjgYEwfzAdBgNVHQ4EFgQUpvk4tzqsTXSE5KIqf88LhCiHDJowDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCAYIwQAYDVR0gBDkwNzA1BggrBgEFBQcCATApMCcGCCsGAQUFBwIBFhtodHRwczovL3RydXN0LmNvcmRhLm5ldHdvcmswCgYIKoZIzj0EAwIDSQAwRgIhAIEuvNc8H0ImbII/XfHDZvQH/1h1IFVJppd2GEt0AapiAiEApqIytidYWCpnGh/YHqteYVl/tkDhivR4eFFoBf11lg4n7v1B3MHGO4dJOn/ytrPjbBUeQg==
+---
+# Source: corda-node/templates/pvc.yaml
+# according to https://docs.microsoft.com/en-us/azure/aks/azure-files-dynamic-pv :
+# ... Once completed, the file share will be created. A Kubernetes secret is also created
+# that includes connection information and credentials. ...
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-corda-node-2020-05-02-20-59-46
+  namespace: corda-nodes
+  annotations:
+    volume.beta.kubernetes.io/storage-class: corda-nodes
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: corda-nodes
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: logs-corda-node-2020-05-02-20-59-46
+  namespace: corda-nodes
+  annotations:
+    volume.beta.kubernetes.io/storage-class: corda-nodes
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: corda-nodes
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: private-data-corda-node-2020-05-02-20-59-46
+  namespace: corda-nodes
+  annotations:
+    volume.beta.kubernetes.io/storage-class: corda-nodes
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: corda-nodes
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: drivers-corda-node-2020-05-02-20-59-46
+  namespace: corda-nodes
+  annotations:
+    volume.beta.kubernetes.io/storage-class: corda-nodes
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: corda-nodes
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: artemis-corda-node-2020-05-02-20-59-46
+  namespace: corda-nodes
+  annotations:
+    volume.beta.kubernetes.io/storage-class: corda-nodes
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: corda-nodes
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: bin-corda-node-2020-05-02-20-59-46
+  namespace: corda-nodes
+  annotations:
+    volume.beta.kubernetes.io/storage-class: corda-nodes
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: corda-nodes
+  resources:
+    requests:
+      storage: 2Gi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: etc-corda-node-2020-05-02-20-59-46
+  namespace: corda-nodes
+  annotations:
+    volume.beta.kubernetes.io/storage-class: corda-nodes
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: corda-nodes
+  resources:
+    requests:
+      storage: 1Mi
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cordapps-corda-node-2020-05-02-20-59-46
+  namespace: corda-nodes
+  annotations:
+    volume.beta.kubernetes.io/storage-class: corda-nodes
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: corda-nodes
+  resources:
+    requests:
+      storage: 1Gi
+
+---
+# Source: corda-node/templates/service.yaml
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: irv-deploy
+  namespace: corda-nodes
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: irv-deploy.tests.corda.r3cev.com.
+spec:
+  selector:
+    app: corda-node-2020-05-02-20-59-46
+  type: LoadBalancer
+  # loadBalancerSourceRanges:
+  # - 80.169.95.66/32
+  # - 81.148.212.130/32
+  externalTrafficPolicy: Local # use external IP address
+  ports:
+  - name: sshd
+    protocol: TCP
+    port: 2010
+    targetPort: 2010
+  - name: p2p
+    protocol: TCP
+    port: 10002
+    targetPort: 10002
+  - name: rpc
+    protocol: TCP
+    port: 10003
+    targetPort: 10003
+---
+# Source: corda-node/templates/deployment.yaml
+
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: corda-node-2020-05-02-20-59-46
+  namespace: corda-nodes
+  labels:
+    app: corda-node-2020-05-02-20-59-46
+    helm_release_name: irv-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: corda-node-2020-05-02-20-59-46
+  template:
+    metadata:
+      labels:
+        app: corda-node-2020-05-02-20-59-46
+        helm_release_name: irv-deploy
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+      - name: init-1
+        # copying files from configMaps into read-write files
+        image: corda/corda-zulu-4.0
+        # securityContext:
+        #   runAsUser: 0
+        # imagePullPolicy: Always
+        command:
+        - bash
+        args:
+        - -c
+        - id -a;
+          pwd;
+          ls -al;
+          ls -al etc;
+          cp -p /opt/corda/CM/node.conf /opt/corda/etc/node.conf;
+          cp -p /opt/corda/CM/*.sh /opt/corda/bin/;
+          echo "node.conf";
+          cat /opt/corda/etc/node.conf;
+        volumeMounts:
+        - name: etc
+          mountPath: /opt/corda/etc
+        - name: bin
+          mountPath: /opt/corda/bin
+        - name: node-conf
+          mountPath: /opt/corda/CM/node.conf
+          subPath: node.conf
+        - name: corda-node-run
+          mountPath: /opt/corda/CM/corda-node-run.sh
+          subPath: corda-node-run.sh
+        - name: corda-wait-for-fqdn
+          mountPath: /opt/corda/CM/corda-wait-for-fqdn.sh
+          subPath: corda-wait-for-fqdn.sh
+        - name: corda-initial-registration
+          mountPath: /opt/corda/CM/corda-initial-registration.sh
+          subPath: corda-initial-registration.sh
+        - name: corda-download-from-url
+          mountPath: /opt/corda/CM/corda-download-from-url.sh
+          subPath: corda-download-from-url.sh
+      
+      - name: init-3
+        image: corda/corda-zulu-4.0
+        imagePullPolicy: Always
+        command:
+        - bash
+        args:
+        - -c
+        - cd /opt/corda;
+          bash bin/corda-initial-registration.sh;
+        volumeMounts:
+        - name: etc
+          mountPath: /opt/corda/etc
+        - name: bin
+          mountPath: /opt/corda/bin
+        - name: cordapps
+          mountPath: /opt/corda/cordapps
+        - name: drivers
+          mountPath: /opt/corda/drivers
+        - name: certificates
+          mountPath: /opt/corda/certificates
+        - name: logs
+          mountPath: /opt/corda/logs
+
+        - name: network-root-truststore
+          mountPath: /opt/corda/certificates/network-root-truststore.jks
+          subPath: network-root-truststore.jks
+
+        - name: private-data
+          mountPath: /opt/corda/private-data
+        - name: artemis
+          mountPath: /opt/corda/artemis
+      - name: init-4
+        image: corda/corda-zulu-4.0
+        imagePullPolicy: Always
+        command:
+        - bash
+        args:
+        - -c
+        - cd /opt/corda;
+          bash bin/corda-wait-for-fqdn.sh;
+        volumeMounts:
+        - name: etc
+          mountPath: /opt/corda/etc
+        - name: bin
+          mountPath: /opt/corda/bin
+        - name: certificates
+          mountPath: /opt/corda/certificates
+        - name: logs
+          mountPath: /opt/corda/logs
+
+        - name: network-root-truststore
+          mountPath: /opt/corda/certificates/network-root-truststore.jks
+          subPath: network-root-truststore.jks
+
+        - name: private-data
+          mountPath: /opt/corda/private-data
+        - name: artemis
+          mountPath: /opt/corda/artemis
+      containers:
+      - name: main
+        image: corda/corda-zulu-4.0
+        imagePullPolicy: Always
+        command:
+        - bash
+        args:
+        - -c
+        - cd /opt/corda;
+          bash bin/corda-node-run.sh;
+        resources:
+          requests:
+            memory: 2G
+          limits:
+            memory: 3G
+        volumeMounts:
+        - name: etc
+          mountPath: /opt/corda/etc
+        - name: bin
+          mountPath: /opt/corda/bin
+        - name: cordapps
+          mountPath: /opt/corda/cordapps
+        - name: drivers
+          mountPath: /opt/corda/drivers
+        - name: certificates
+          mountPath: /opt/corda/certificates
+        - name: logs
+          mountPath: /opt/corda/logs
+
+        - name: network-root-truststore
+          mountPath: /opt/corda/certificates/network-root-truststore.jks
+          subPath: network-root-truststore.jks
+
+        - name: private-data
+          mountPath: /opt/corda/private-data
+        - name: artemis
+          mountPath: /opt/corda/artemis
+      imagePullSecrets:
+      - name: reader-from-acr-przemek-secret
+      - name: docker-ent-registry-reader
+      - name: reader-from-acr-cordatesting
+      volumes:
+        - name: corda-initial-registration
+          configMap:
+            name: corda-node-2020-05-02-20-59-46
+        - name: corda-wait-for-fqdn
+          configMap:
+            name: corda-node-2020-05-02-20-59-46
+        - name: corda-download-from-url
+          configMap:
+            name: corda-node-2020-05-02-20-59-46
+        - name: corda-node-run
+          configMap:
+            name: corda-node-2020-05-02-20-59-46
+        - name: node-conf
+          configMap:
+            name: corda-node-2020-05-02-20-59-46
+        - name: dbaccounts
+          configMap:
+            name: corda-node-2020-05-02-20-59-46
+            defaultMode: 0755
+        - name: network-root-truststore
+          configMap:
+            name: corda-node-2020-05-02-20-59-46
+        - name: certificates
+          persistentVolumeClaim:
+            claimName: pvc-corda-node-2020-05-02-20-59-46
+        - name: logs
+          persistentVolumeClaim:
+            claimName: logs-corda-node-2020-05-02-20-59-46
+        - name: private-data
+          persistentVolumeClaim:
+            claimName: private-data-corda-node-2020-05-02-20-59-46
+        - name: drivers
+          persistentVolumeClaim:
+            claimName: drivers-corda-node-2020-05-02-20-59-46
+        - name: artemis
+          persistentVolumeClaim:
+            claimName: artemis-corda-node-2020-05-02-20-59-46
+        - name: etc
+          persistentVolumeClaim:
+            claimName: etc-corda-node-2020-05-02-20-59-46
+        - name: bin
+          persistentVolumeClaim:
+            claimName: bin-corda-node-2020-05-02-20-59-46
+        - name: cordapps
+          persistentVolumeClaim:
+            claimName: cordapps-corda-node-2020-05-02-20-59-46
+
+---
+# Source: corda-node/templates/pre-delete.yaml
+

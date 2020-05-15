@@ -1,0 +1,62 @@
+
+
+# resources
+
+apt-get install vim-tiny
+
+
+### create a resource file quickly
+kubectl create *** *** --dry-run -o yaml > resource-file.yml
+
+
+### get a shell into a container
+https://kubernetes.io/docs/tasks/debug-application-cluster/get-shell-running-container/#getting-a-shell-to-a-container
+
+### run an ubuntu container locally as root
+docker run -it ubuntu:latest /bin/bash
+
+### copy files in/out of the container
+https://dev.to/mfahlandt/copy-files-from-and-to-kubernetes-pods-and-docker-container-4lgh
+https://stackoverflow.com/questions/43732342/how-to-copy-file-from-container-in-a-pod-in-a-specific-namespace
+https://medium.com/@nnilesh7756/copy-directories-and-files-to-and-from-kubernetes-container-pod-19612fa74660
+
+
+
+
+https://vsupalov.com/docker-shared-permissions/
+
+apt-get install vim-tiny
+
+
+### create a resource file quickly
+kubectl create *** *** --dry-run -o yaml > resource-file.yml
+
+
+### get a shell into a container
+https://kubernetes.io/docs/tasks/debug-application-cluster/get-shell-running-container/#getting-a-shell-to-a-container
+
+### run an ubuntu container locally as root
+docker run -it ubuntu:latest /bin/bash
+
+### copy files in/out of the container
+https://dev.to/mfahlandt/copy-files-from-and-to-kubernetes-pods-and-docker-container-4lgh
+https://stackoverflow.com/questions/43732342/how-to-copy-file-from-container-in-a-pod-in-a-specific-namespace
+https://medium.com/@nnilesh7756/copy-directories-and-files-to-and-from-kubernetes-container-pod-19612fa74660
+
+
+# cleaning up
+https://www.digitalocean.com/community/tutorials/how-to-remove-docker-images-containers-and-volumes
+
+
+----------------
+
+https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-deploy-cluster
+
+
+
+https://github.com/kubernetes/kubeadm/issues/113
+https://github.com/kubernetes/kubernetes/issues/33618
+https://github.com/hgfischer/Kubernetes14/blob/master/bootstrap.sh
+
+
+

@@ -1,0 +1,14 @@
+
+### create a pvc
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: nginx-pvc 
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: nginx-sc
+  resources:
+    requests:
+      storage: 5Gi
+

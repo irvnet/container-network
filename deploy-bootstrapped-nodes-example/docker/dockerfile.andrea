@@ -1,0 +1,25 @@
+FROM azul/zulu-openjdk:8u192
+
+## Add packages, clean cache, create dirs, create corda user and change ownership
+RUN apt-get update && \
+    rm -rf /var/lib/apt/lists/* && \
+    addgroup corda && \
+    useradd corda -g corda -m -d /opt/corda
+
+# copy our bootstrapped andrea node into /opt/corda
+COPY --chown=corda:corda ../nodes/andrea/  /opt/corda
+COPY --chown=corda:corda scripts/run.sh   /opt/corda/run.sh
+
+USER "corda"
+
+ENV P2P_ADDRESS=10200 \
+    RPC_ADDRESS=10201 \
+    ADM_ADDRESS=10202 \
+    SSH_ADDRESS=2000  \
+    PATH=$PATH:/opt/corda/bin 
+
+EXPOSE ${P2P_ADDRESS} ${RPC_ADDRESS} ${ADM_ADDRESS} ${SSH_ADDR}
+WORKDIR /opt/corda
+ENV HOME=/opt/corda
+
+ENTRYPOINT ["/opt/corda/run.sh"]

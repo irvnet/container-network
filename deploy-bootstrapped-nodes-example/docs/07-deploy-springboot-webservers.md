@@ -1,0 +1,51 @@
+
+---
+
+ 
+## - demonstrate and interpret the metrics
+
+
+---
+
+
+## - setup something to drive the nodes with transactions
+## - delete all the resources
+## - deploy using helm charts from corda-kubernetes-internal?
+
+- add log review
+- break this into multiple documents that forward to the next segment
+
+
+---
+
+ Next: [Deploy Springboot webservers](deploy-springboot-webservers.md)
+
+
+## Create a web interface for the nodes
+
+### create a test springboot web server
+In this section we will test a simple springboot webserver and instrument it with the Jolokia driver. This will come in handy when we create a webserver to enable the node with a webserver which will accept incoming http requests and tickle the corresponding  flow as an integration mechanism
+- create a simple springboot web server and test
+- containerize the springboot web server and deploy
+- expose the web port for the webserver and test
+- add a custom route and redeploy/test the http route
+- add jolokia driver and redeploy/test the jolokia endoint
+- configure git/jenkins to do the deployment
+
+
+## Add the springboot web server to the pod
+In this section we'll containerize the springboot webserver and add it to the pod with the node
+notes:
+- provide a description of the sidecar pattern
+
+
+
+- create and test a simple springboot web server and test
+- modify the web server to add routes that coincide with the flows
+- configure the uncontainerized andrea-node to recognize the webserver and test
+
+### containerize the sprintboot webserver
+
+
+ Next: [Cleanup deploy resources](cleanup-deployed-resources.md)
+

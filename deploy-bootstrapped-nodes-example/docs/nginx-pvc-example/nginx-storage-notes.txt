@@ -1,0 +1,23 @@
+
+
+
+
+AKS Storage
+
+# good overview of which persistence to use and when
+https://matthewpalmer.net/kubernetes-app-developer/articles/kubernetes-volumes-example-nfs-persistent-volume.html
+https://medium.com/dataseries/creating-persistent-volume-in-azure-kubernetes-service-aks-using-azure-files-2a48d4e08fb8
+https://pascalnaber.wordpress.com/2018/01/26/persistent-storage-and-volumes-using-kubernetes-on-azure-with-aks-or-azure-container-service/
+
+
+https://docs.microsoft.com/en-us/azure/aks/concepts-storage
+https://docs.microsoft.com/en-us/azure/aks/azure-files-dynamic-pv
+https://docs.microsoft.com/en-us/azure/aks/azure-disk-volume
+https://docs.microsoft.com/en-us/azure/aks/concepts-storage#storage-classes
+https://kubernetes.io/docs/concepts/storage/storage-classes/
+https://docs.microsoft.com/en-us/azure/aks/concepts-storage#persistent-volumes
+https://pascalnaber.wordpress.com/2018/01/26/persistent-storage-and-volumes-using-kubernetes-on-azure-with-aks-or-azure-container-service/
+
+### storage
+- keep in mind that you provide a volume and mount a portion of the tree on the volume... and it'll be there if you delete and re-create the pod
+
