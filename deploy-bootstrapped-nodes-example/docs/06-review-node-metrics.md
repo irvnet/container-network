@@ -7,5 +7,5 @@
 
 ---
 
- Next: [Deploy Springboot webservers](07-deploy-springboot-webservers.md)
+ Next: [Deploy Springboot webservers](/deploy-bootstrapped-nodes-example/docs/07-deploy-springboot-webservers.md)
 

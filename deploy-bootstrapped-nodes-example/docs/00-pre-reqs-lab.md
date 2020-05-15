@@ -11,4 +11,4 @@ For this exercise you will need the following
 
 The Linux vm we'll use will be our control machine with docker installed.
 ---
- Next: [Bootstrap the network](01-bootstrap-the-network.md)
+ Next: [Bootstrap the network](/deploy-bootstrapped-nodes-example/docs/01-bootstrap-tne-network.md)

@@ -47,4 +47,4 @@ kubectl delete pods node-test
 ## Congratulations! - you've deployed a node manually into a kubernetes pod!
 
 ---
- Next: [Deploy the nodes to the cluster](04-deploy-nodes-to-cluster.md)
+ Next: [Deploy the nodes to the cluster](/deploy-bootstrapped-nodes-example/docs/04-deploy-nodes-to-cluster.md)

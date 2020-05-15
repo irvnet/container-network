@@ -112,4 +112,4 @@ Congratulations! - you have created deployments for your custom images
 
 ---
 
- Next: [Redeploy with R3 official node images](05-redeploy-with-node-images.md)
+ Next: [Redeploy with R3 official node images](/deploy-bootstrapped-nodes-example/docs/05-redeploy-with-node-images.md)

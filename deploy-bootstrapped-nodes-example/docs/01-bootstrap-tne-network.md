@@ -281,5 +281,5 @@ Congratulations! - you have successfully provisioned a bootstrapped Corda networ
 
 ---
 
- Next: [Create an Kubernetes Cluster](02-create-an-aks-cluster.md)
+ Next: [Create an Kubernetes Cluster](/deploy-bootstrapped-nodes-example/docs/02-create-an-aks-cluster.md)
 

@@ -44,5 +44,5 @@ notes:
 ### containerize the sprintboot webserver
 
 
- Next: [Cleanup deploy resources](08-cleanup-deployed-resources.md)
+ Next: [Cleanup deploy resources](/deploy-bootstrapped-nodes-example/docs/08-cleanup-deployed-resources.md)
 

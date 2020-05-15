@@ -15,4 +15,4 @@ Notes:
 
 
 ---
- Next: [Review node metrics](06-review-node-metrics)
+ Next: [Review node metrics](/deploy-bootstrapped-nodes-example/docs/06-review-node-metrics.md)
