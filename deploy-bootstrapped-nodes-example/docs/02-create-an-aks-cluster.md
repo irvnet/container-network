@@ -47,4 +47,4 @@ You have created a an Azure resource group to container the Azure artifacts and 
 
 
 ---
- Next: [Test a node deployment](test-node-deployment.md)
+ Next: [Test a node deployment](03-test-node-deployment.md)

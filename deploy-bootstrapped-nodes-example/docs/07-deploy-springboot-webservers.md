@@ -18,9 +18,6 @@
 
 ---
 
- Next: [Deploy Springboot webservers](deploy-springboot-webservers.md)
-
-
 ## Create a web interface for the nodes
 
 ### create a test springboot web server
@@ -47,5 +44,5 @@ notes:
 ### containerize the sprintboot webserver
 
 
- Next: [Cleanup deploy resources](cleanup-deployed-resources.md)
+ Next: [Cleanup deploy resources](08-cleanup-deployed-resources.md)
 
