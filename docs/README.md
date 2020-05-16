@@ -1,25 +1,30 @@
 
+# The Corda Deployment Initiative 
 
-This repo is all about doing a personal experiment for a large corda-based deployment on a kubernetes cluster
+## Description: 
+This repo is all about doing a personal experiment for kubernete based deployment using Corda-based services as a focal point. 
 
-The rules are simple...
-- Establish a single cluster... keep it running successfully as long as possible
-- Start with a 2 small cluster nodes which drives understanding for
-  - cluster upgrade use case
-  - infrastructure monitoring and capacity planning use case (when have my workloads maxed out my deployment)
+## Objectives: 
+- Establish an AKS cluster... keep it running.  Start with a 2 node cluster and adapt as the deployed workloads increase demand. 
+- Package and deploy the [Corda sample apps](https://github.com/corda/samples) and deploy them in the AKS cluster adjusting the deployment strategy for each application as necessary, and re-configuring the cluster based on the workload requirement 
+- Deploy a 'test-service'... a simple workload to apply new configurations on before expending the effort to apply to nodes.
+- capture the learnings in a Gitbook service with video demos of 10min or less embedded in each page.
 
-- package all of the sample cordapps and deploy them in the cluster... drives understanding of:
-  - application packaging
-  - application resource planning
-  - multi-tenant application isolation (early thinking)
-  - application resource quota management
-  - ingress routing structure
-  - understanding and usage of official corda container
-  - devops pipeline structure
+---
+</br> 
 
-- its a good exercise for accessing application requirements and delivering a prototype deployment quickly
+## Anticipated learning Experience:
 
-## Target applications: https://github.com/corda/samples
+- Understand pod design and workload resource planning for Corda workloads 
+- Multi-tenant considerations for Corda workload management (data isolation, auth, resource quota management)
+- Ingress routing structure for managing workloads in a multi-tenant cluster
+- Explore the usage strategies for the official Corda container 
+- Explore devops pipeline design with in-cluster or out-of-cluster devops tooling  
+- workload deployment strategies suitable for highly stateful services like Corda workloads
+- deployment for the complete set of services including nodes, firewall, and CENM
+
+
+## Corda Workloads
 - auction-cordapp
 - autopayroll-CordaService
 - bikemarket-TokenSDK
@@ -50,3 +55,13 @@ The rules are simple...
 - yo-cordapp
 
 
+## Other workloads
+- CI Server - Jenkins
+- test workload - TBD... an Nginx deploment can be simple or complex a provide interesting learning opportunities 
+- Springboot servers - adds value as a front end for Corda nodes
+- Hawtio - provides access to metrics, alleviates the user from needing to deploy Hawtio locally
+- off-cluster data sources - provide nodes access to off-cluster db's to understand cross-cloud latency issues
+
+
+Stretch Goals
+- Helm - understand designing and deployign workloads as helm charts
