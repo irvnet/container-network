@@ -1,27 +1,22 @@
 
----
+# Deploy a SpringBoot Webserver
 
- 
-## - demonstrate and interpret the metrics
-
-
----
+### Objective: In this exercise you will deploy a springboot webserver. To save time, the springboot webserver has already been created for you. The source code is available [here](#) if you'd like to make updates and deploy them into the environment... however, this execrise is more focused on packaging and usage of the service more than creating the service.
 
 
-## - setup something to drive the nodes with transactions
-## - delete all the resources
-## - deploy using helm charts from corda-kubernetes-internal?
-
-- add log review
-- break this into multiple documents that forward to the next segment
+TODO:
+- add environment variables for reused resource names (cluster, acr)
 
 
 ---
+
 
 ## Create a web interface for the nodes
 
 ### create a test springboot web server
 In this section we will test a simple springboot webserver and instrument it with the Jolokia driver. This will come in handy when we create a webserver to enable the node with a webserver which will accept incoming http requests and tickle the corresponding  flow as an integration mechanism
+
+
 - create a simple springboot web server and test
 - containerize the springboot web server and deploy
 - expose the web port for the webserver and test
