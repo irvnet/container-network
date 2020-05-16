@@ -2,9 +2,12 @@
 
 ---
 
-Objective: Establish a build and deploy pipeline for cordapp development
+## Objective: 
+- Establish a build and deploy pipeline for cordapp development
 
-Description: In this tutorial  we will establish a pipeline for cordapp build and deployment. Our target for deployment will be an AKS cluster.
+## Description: 
+In this tutorial  we will establish a pipeline for cordapp build and deployment. Our target for deployment will be an AKS cluster.
+
 
 To establish our pipeline we will consider 2 different possibilities... [Travis CI](https://docs.travis-ci.com/user/for-beginners/) using build as a service, and [Jenkins](https://www.jenkins.io/) tooling which we'll deploy to our AKS cluster.
 
@@ -17,6 +20,7 @@ Prerequisites
 
 
 ## Resources (Travis CI)
+
 https://medium.com/bestcloudforme/travis-ci-aks-azure-kubernetes-service-zero-downtime-continuous-deployment-case-study-eng-ee5d1de256f2
 
 https://docs.travis-ci.com/user/deployment/releases/
@@ -31,13 +35,13 @@ https://medium.com/angular-in-depth/the-angular-devops-series-ct-ci-with-travis-
 
 
 
----------------------------------
+---
 
 
 ## Resources (Jenkins deployment)
 
 
-# good overview of an aks based jenkins deployment
+### good overview of an aks based jenkins deployment
 https://www.youtube.com/watch?v=eRWIJGF3Y2g
 - use an azure file-share (keep the files outside the cluster for flexibility)
 - https://github.com/marcel-dempers/docker-development-youtube-series/tree/master/jenkins
@@ -62,17 +66,26 @@ https://docs.microsoft.com/en-us/azure/developer/jenkins/deploy-from-github-to-a
 
 https://docs.microsoft.com/en-us/azure/developer/jenkins/deploy-to-aks-using-blue-green-deployment-pattern
 
+---
+
+## Applying deployment Strategies to Corda 
+
+### What deployment strategies optimize Corda deployments (considering they're highly stateful)? 
+- Blue-green deployment: 
+  - possibly: if cutover means you stop the old node just before starting the new one. Other strategies may not apply considering Corda can only ever have one instance of a legal name running on a network. 
+  - use case: upgrade - corda deployments can be lengthy. To minimize downtime can take this strategy with a keen focus on the timing of turning old service down immediately before turning up the new one.
+  - https://docs.microsoft.com/en-us/azure/developer/jenkins/deploy-to-aks-using-blue-green-deployment-pattern
 
 
+- Canary Deployment:
+  - possibly: may be relevant when upgrading all the available nodes to a new corda version in the cluster. Assuming the workloads will all be custom built images based on the official corda image, upgrading the customer image to be based on a new version of the corda container, or the workload deployment to a new configuration,  may apply for this strategy
 
---------------------
-
-# Applying deployment Strategies to Corda 
-
-# can you make blue green patterns work with corda? 
-- I think so if you guarantee that cutover means you stop the old node just before starting the new one
-- you still 
-https://docs.microsoft.com/en-us/azure/developer/jenkins/deploy-to-aks-using-blue-green-deployment-pattern
+### Resources (Deployment Strategy)
+- https://dev.to/mostlyjason/intro-to-deployment-strategies-blue-green-canary-and-more-3a3
+- https://techbeacon.com/devops/bulletproof-devops-strategy-ensure-success-cloud
+- https://docs.openshift.com/container-platform/3.7/dev_guide/deployments/deployment_strategies.html
+- https://medium.com/velotio-perspectives/exploring-upgrade-strategies-for-stateful-sets-in-kubernetes-c02b8286f251
+- https://dzone.com/articles/docker-and-devops-developing-state-full-applicatio
 
 
 
