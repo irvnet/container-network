@@ -1,17 +1,16 @@
 
 
-
+# Create a Bootstrapped Network
 
 ---
 
-### Use the Corda Network Bootstrapper to create nodes that communicate on a local Corda network
+Objective: In this exercise you will bootstrap a Corda network that includes 2 nodes and a notary. 
 
-- gather node.confs and bootstrapper
-- bootstrap the network and stash the directories that'll be added to the images
-- go "here" for the tutorial on provisioning a bootstrapped network
-
-notes:
+TODO:
 - add environment variables for reused resource names (cluster, acr)
+
+
+### Use the Corda Network Bootstrapper to create nodes that communicate on a local Corda network
 
 
 ---
@@ -24,9 +23,6 @@ System Requirements:
 Required Software:
 - Azul Java JDK [v1.8](https://cdn.azul.com/zulu/bin/zulu8.44.0.11-ca-jdk8.0.242-linux_x64.tar.gz)
 - Network Bootstrapper v4.4 (Corda Enterprise)
-- Jolokia JVM agent [v1.6.1](https://search.maven.org/remotecontent?filepath=org/jolokia/jolokia-jvm/1.6.1/jolokia-jvm-1.6.1-agent.jar)
-- Hawtio web application [v2.10](https://repo1.maven.org/maven2/io/hawt/hawtio-app/2.10.0/hawtio-app-2.10.0.jar)
-
 
 ---
 
@@ -59,8 +55,7 @@ There are several options for building a corda network
 2. Joining a public network like [Testnet](https://docs.corda.net/docs/corda-enterprise/4.4/network/corda-testnet-intro.html) or the production [Corda Network](https://corda.network/)
 3. Building a private network using [Corda Enterprise Network Manager](https://docs.corda.net/docs/cenm/1.2.html).
 
-This tutorial will build a simple test network that can run on a developers desktop, or on a cloud-based virtual machine. To build our test network, we will use the Corda Bootstrapper Utility.
-
+This will provide the required nodes that can be easily used for deployment into the cluster.  To build our test network, we will use the Corda Bootstrapper Utility.
 
 ### Create a work area for the 2 nodes and notary
 ```
@@ -188,7 +183,8 @@ EOF
 
 
 
-### Bootstrap the network with the Corda Enterprise network bootstrapper
+### Bootstrap the network with the Network Bootstrapper utility for Corda Enterprise 
+
 Upload the bootstrapper jar file to the target machine
 ```
 java -jar bootstrapper.jar -V

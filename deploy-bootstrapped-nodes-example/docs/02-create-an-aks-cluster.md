@@ -1,4 +1,19 @@
 
+---
+
+Objective: In this exercise you will provision a Kubernetes cluster on Azure. 
+
+[add a blurb on azure aks]
+[add a diagram for initial architecture (2 nodes )]
+
+TODO:
+- add environment variables for reused resource names (cluster, acr)
+
+
+### Use the Corda Network Bootstrapper to create nodes that communicate on a local Corda network
+
+
+---
 
 ## Create and test an AKS cluster
 In this segment you'll use Azure to deploy a kubernetes cluster and an container image repository to store the custom images we'll build. We'll deploy our images from the custom image repostory for the this segment. 
@@ -44,6 +59,10 @@ You have created a an Azure resource group to container the Azure artifacts and 
 - get a shell and change the web page contents
 - delete the deployment
 
+## Resources
+https://azure.microsoft.com/en-us/services/kubernetes-service/#features
+https://docs.microsoft.com/en-us/azure/aks/concepts-clusters-workloads
+https://docs.microsoft.com/en-us/azure/architecture/reference-architectures/microservices/aks
 
 
 ---
