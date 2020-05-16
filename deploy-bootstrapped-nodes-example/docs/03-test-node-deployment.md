@@ -1,6 +1,14 @@
 
+# Test the node deployment
+---
+
+Objective: In this exercise you will do a test deployment of a single node to understand the requirements.
+
+
+[diagram describing the contents of the pod... this is an opportunity to introduce the notion of pod design. Deployers need to practice thinking about how pods are designed and appply the proper devices to support the applications requirements ]
 
 ---
+
 ### Run a temporary pod to test building a node (it exits when you leave)
 ```
 kubectl run -it node-test --image=azul/zulu-openjdk:8u192 --restart=Never
