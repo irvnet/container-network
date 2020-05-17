@@ -34,6 +34,21 @@ A proposed structure for each document is:
 - Cleanup - describe how to delete all the resources so readers don't get charged
 - Demo (max 10m)
 
+Multi-part tutorials:
+- part 1 gets published publicly
+- part 2 & 3 are for public or customer-facing sessions
+- part 1 gets pushed (manually) from local machine as markdown to gitbook (remainder stays in git)
+
+
+
+
+## keep 2 gitbook respos (or spaces)
+- private - where draft and backlog content get screated
+- public - wehre content gets released when appropriate for all to see
+This allows me to separate the pace of building vs releasing content
+
+
+
 ### Video Demos
 Keep it simple
 - capture them with quicktime
@@ -46,6 +61,9 @@ Keep it simple
 
 ### Great format for document structure
 https://kumorilabs.com/blog/k8s-3-create-deployments-services-kubernetes/
+
+### Style Guide for kubernetes documentation
+https://kubernetes.io/docs/contribute/style/style-guide/
 
 ### comparisons of youtube, daily motion, vimeo (proposing daily motion)
 https://videoconverter.wondershare.com/vimeo/vimeo-dailymotion.html
