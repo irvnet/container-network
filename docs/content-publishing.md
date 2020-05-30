@@ -33,6 +33,7 @@ A proposed structure for each document is:
 - Implementation - step by step instructions for the topic of discussion
 - Cleanup - describe how to delete all the resources so readers don't get charged
 - Demo (max 10m)
+- Slides (using slides.com / reveal.js for decks)
 
 Multi-part tutorials:
 - part 1 gets published publicly
