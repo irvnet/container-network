@@ -24,10 +24,12 @@ Planning the Deployment:
 mkdir ${HOME}/deploy-yo/work
 
 ### Pull the samples repo
+```
 {
  cd ${HOME}/deploy-yo/work
  git clone git@github.com:corda/samples.git
 }
+```
 
 ### Build the cordapp-yo sample application
 {
