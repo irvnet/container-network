@@ -32,10 +32,12 @@ mkdir ${HOME}/deploy-yo/work
 ```
 
 ### Build the cordapp-yo sample application
+```
 {
  cd ${HOME}/deploy-yo/work/samples/yo-cordapp 
  ./gradlew jar 
 }
+```
 
 ### create a workspace and add node.conf's for bootstrapping 
 {
