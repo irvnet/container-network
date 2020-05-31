@@ -1,2 +1,0 @@
-kubectl run andrea-yo --image=irvnet/andrea-yo --restart=Never --dry-run=client -o yaml
-
