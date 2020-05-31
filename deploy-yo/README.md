@@ -40,18 +40,24 @@ mkdir ${HOME}/deploy-yo/work
 ```
 
 ### create a workspace and add node.conf's for bootstrapping 
+```
 {
  mkdir -p ${HOME}/deploy-yo/work/build
  cp ${HOME}/deploy-yo/configs/*.conf ${HOME}/deploy-yo/work/build/ 
 }
 
+```
+
 ### Download the bootstrapper  
+```
 {
  ${HOME}/deploy-yo/work/build
  curl -O https://software.r3.com/artifactory/corda-releases/net/corda/corda-tools-network-bootstrapper/4.4/corda-tools-network-bootstrapper-4.4.jar
  mv corda-tools-network-bootstrapper-4.4.jar bootstrapper.jar
  java -jar bootstrapper.jar -V
 }
+```
+
 
 ### Run the bootstrapper and generate the network
 java -jar bootstrapper.jar --dir  ${HOME}/deploy-yo/work/build
