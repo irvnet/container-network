@@ -71,8 +71,8 @@ mkdir ${HOME}/deploy-yo/work
 }
 ```
 
- ### build & upload andrea image to dockerhub
- ```
+### build & upload andrea image to dockerhub
+```
 {
  docker build -t andrea-yo -f dockerfile.andrea .
  docker tag andrea-yo irvnet/andrea-yo
@@ -80,17 +80,17 @@ mkdir ${HOME}/deploy-yo/work
 }
 ```
 
- ### build & deploy barbara image to dockerhub
- ```
+### build & deploy barbara image to dockerhub
+```
 {
- docker build -t barbara-yo -f dockerfile.barbara .
- docker tag barbara-yo irvnet/barbara-yo
- docker push
+  docker build -t barbara-yo -f dockerfile.barbara .
+  docker tag barbara-yo irvnet/barbara-yo
+  docker push
 }
 ```
 
 
- ### build & deploy notary image to dockerhub
+### build & deploy notary image to dockerhub
 ```
 {
  docker build -t notary-yo -f dockerfile.notary .
@@ -99,18 +99,34 @@ mkdir ${HOME}/deploy-yo/work
 }
 ```
 
+### check current k8s context
+```
+{
+ kubectl config get-contexts
+ kubectl config current-context
+}
+```
+
+
+### create manifest files for each node
+```
+{
+ for nodename in notary andrea barbara; do
+     kubectl run ${nodename}-yo --image=irvnet/${nodename}-yo --restart=Never --dry-run=client -o yaml > ${nodename}.yml
+ done
+}
+```
+
+### deploy pods to cluster
+```
+{
+ kubectl create -f *.yml
+ watch kubectl get pods
+}
+
 TODO:
-- ADD WEB SERVER
-- CREATE K8S RESOURCE FILES WITH DRY-RUN
 - DEPLOY NODE AND WEBSERVER
 - SEND A YO TRANSACTION
-
-
-
-
-
-
-
 
 
 
