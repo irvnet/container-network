@@ -125,8 +125,9 @@ mkdir ${HOME}/deploy-yo/work
 }
 
 TODO:
-- DEPLOY NODE AND WEBSERVER
-- SEND A YO TRANSACTION
+- expose the ssh and p2p port for each node
+- SEND A YO TRANSACTION from andrea to barbara
+
 
 
 
