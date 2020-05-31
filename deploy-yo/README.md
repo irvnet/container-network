@@ -64,35 +64,40 @@ mkdir ${HOME}/deploy-yo/work
 
 
 ### Add in the dockerfiles for Andrea, Barbara and Notary
+```
 {
  mkdir -p ${HOME}/deploy-yo/work/build
  cp ${HOME}/deploy-yo/docker/dockerfile.* ${HOME}/deploy-yo/work/build/ 
 }
-
+```
 
  ### build & upload andrea image to dockerhub
+ ```
 {
  docker build -t andrea-yo -f dockerfile.andrea .
  docker tag andrea-yo irvnet/andrea-yo
  docker push
 }
-
+```
 
  ### build & deploy barbara image to dockerhub
+ ```
 {
  docker build -t barbara-yo -f dockerfile.barbara .
  docker tag barbara-yo irvnet/barbara-yo
  docker push
 }
+```
 
 
  ### build & deploy notary image to dockerhub
+```
 {
  docker build -t notary-yo -f dockerfile.notary .
  docker tag notary-yo irvnet/notary-yo
  docker push
 }
-
+```
 
 TODO:
 - ADD WEB SERVER
