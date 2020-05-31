@@ -1,8 +1,0 @@
-apiVersion: skaffold/v2beta4
-kind: Config
-metadata:
-  name: andrea-pod
-deploy:
-  kubectl:
-    manifests:
-    - andrea-pod.yaml
