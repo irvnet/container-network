@@ -60,13 +60,15 @@ mkdir ${HOME}/deploy-yo/work
 
 
 ### Run the bootstrapper and generate the network
-java -jar bootstrapper.jar --dir  ${HOME}/deploy-yo/work/build
+`java -jar bootstrapper.jar --dir  ${HOME}/deploy-yo/work/build`
+
 
 ### Add in the dockerfiles for Andrea, Barbara and Notary
 {
  mkdir -p ${HOME}/deploy-yo/work/build
  cp ${HOME}/deploy-yo/docker/dockerfile.* ${HOME}/deploy-yo/work/build/ 
 }
+
 
  ### build & upload andrea image to dockerhub
 {
@@ -75,12 +77,14 @@ java -jar bootstrapper.jar --dir  ${HOME}/deploy-yo/work/build
  docker push
 }
 
+
  ### build & deploy barbara image to dockerhub
 {
  docker build -t barbara-yo -f dockerfile.barbara .
  docker tag barbara-yo irvnet/barbara-yo
  docker push
 }
+
 
  ### build & deploy notary image to dockerhub
 {
