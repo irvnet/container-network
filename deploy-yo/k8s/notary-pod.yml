@@ -7,7 +7,7 @@ metadata:
   name: notary-yo
 spec:
   containers:
-  - image: irvnet/notary-yo
+  - image: irvnet/notary-yo:1.5
     name: notary-yo
     resources: {}
   dnsPolicy: ClusterFirst

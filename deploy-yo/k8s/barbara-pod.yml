@@ -7,7 +7,7 @@ metadata:
   name: barbara-yo
 spec:
   containers:
-  - image: irvnet/barbara-yo
+  - image: irvnet/barbara-yo:1.5
     name: barbara-yo
     resources: {}
   dnsPolicy: ClusterFirst
