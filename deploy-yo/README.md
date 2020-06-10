@@ -48,8 +48,11 @@ mkdir ${HOME}/deploy-yo/work
 
 ```
 
-### Download the bootstrapper  
+### Download the CE Bootstrapper  
 ```
+
+todo: switch from OS to CE
+
 {
  ${HOME}/deploy-yo/work/build
  curl -O https://software.r3.com/artifactory/corda-releases/net/corda/corda-tools-network-bootstrapper/4.4/corda-tools-network-bootstrapper-4.4.jar
@@ -71,7 +74,7 @@ mkdir ${HOME}/deploy-yo/work
 }
 ```
 
-### build & upload andrea image to dockerhub
+### Build & upload andrea image to dockerhub
 ```
 {
  docker build -t andrea-yo -f dockerfile.andrea .
@@ -80,7 +83,7 @@ mkdir ${HOME}/deploy-yo/work
 }
 ```
 
-### build & deploy barbara image to dockerhub
+### Build & deploy barbara image to dockerhub
 ```
 {
   docker build -t barbara-yo -f dockerfile.barbara .
@@ -90,7 +93,7 @@ mkdir ${HOME}/deploy-yo/work
 ```
 
 
-### build & deploy notary image to dockerhub
+### Build & deploy notary image to dockerhub
 ```
 {
  docker build -t notary-yo -f dockerfile.notary .
@@ -99,7 +102,7 @@ mkdir ${HOME}/deploy-yo/work
 }
 ```
 
-### check current k8s context
+### Check current k8s context
 ```
 {
  kubectl config get-contexts
@@ -108,7 +111,7 @@ mkdir ${HOME}/deploy-yo/work
 ```
 
 
-### create manifest files for each node
+### Create manifest files for each node
 ```
 {
  for nodename in notary andrea barbara; do
@@ -117,15 +120,27 @@ mkdir ${HOME}/deploy-yo/work
 }
 ```
 
-### deploy pods to cluster
+### Deploy pods to cluster
 ```
 {
- kubectl create -f *.yml
+ kubectl create -f andrea-pod.yml
+ kubectl create -f barbara-pod.yml
+ kubectl create -f notary-pod.yml
  watch kubectl get pods
 }
 
+Stop the watch with ctrl-C to return to the command line.
+
+### Expose ports for p2p and crash shell
+{
+  kubectl expose pod andrea-node --type=LoadBalancer service
+}
+
+
+
 TODO:
 - expose the ssh and p2p port for each node
+- pre-req: need to install externaldns so p2p can have FQDN for public access (can use private dns?)
 - SEND A YO TRANSACTION from andrea to barbara
 
 
