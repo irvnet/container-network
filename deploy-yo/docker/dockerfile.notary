@@ -2,6 +2,7 @@ FROM azul/zulu-openjdk:8u192
 
 ## Add packages, clean cache, create dirs, create corda user and change ownership
 RUN apt-get update && \
+    apt-get install dnsutils -y && \
     rm -rf /var/lib/apt/lists/* && \
     addgroup corda && \
     useradd corda -g corda -m -d /opt/corda
@@ -9,8 +10,6 @@ RUN apt-get update && \
 # copy our bootstrapped notary node into /opt/corda
 COPY --chown=corda:corda notary/  /opt/corda
 COPY --chown=corda:corda scripts/run.sh   /opt/corda/run.sh
-COPY --chown=corda:corda app/contracts-0.1.jar   /opt/corda/cordapps
-COPY --chown=corda:corda app/workflows-0.1.jar   /opt/corda/cordapps
 
 USER "corda"
 
