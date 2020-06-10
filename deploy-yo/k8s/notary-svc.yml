@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: notary-yo
+spec:
+  ports:
+  - name: ssh-port
+    port: 4000
+    protocol: TCP
+    targetPort: 4000
+  - name: p2p
+    port: 10400 
+    protocol: TCP
+    targetPort: 10400 
+  - name: rpc
+    port: 10401
+    protocol: TCP
+    targetPort: 10401
+  selector:
+    run: notary-yo
+  type: LoadBalancer

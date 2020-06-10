@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: andrea-yo
+spec:
+  ports:
+  - name: ssh-port
+    port: 2000
+    protocol: TCP
+    targetPort: 2000
+  - name: p2p
+    port: 10200 
+    protocol: TCP
+    targetPort: 10200 
+  - name: rpc
+    port: 10201
+    protocol: TCP
+    targetPort: 10201
+  selector:
+    run: andrea-yo
+  type: LoadBalancer
