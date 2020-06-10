@@ -2,6 +2,7 @@ FROM azul/zulu-openjdk:8u192
 
 ## Add packages, clean cache, create dirs, create corda user and change ownership
 RUN apt-get update && \
+    apt-get install dnsutils -y && \
     rm -rf /var/lib/apt/lists/* && \
     addgroup corda && \
     useradd corda -g corda -m -d /opt/corda
